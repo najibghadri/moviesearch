@@ -1,5 +1,4 @@
-import {SEARCH, RESULT, resultAction} from "../actions/actions";
-import { search } from "../../ApiService";
+import {SEARCH, RESULT} from "../actions/actions";
 
 const initialState = {
   results: [],
@@ -7,15 +6,12 @@ const initialState = {
   page: 0,
   total_pages: 0,
   total_results: 0,
-  status: "idle"
+  status: "idle",
 };
 
 function reducer(state = initialState, action) {
   switch (action.type) {
     case SEARCH:
-      search(action.query, action.page).then((response) => {
-        action.asyncDispatch(resultAction(response.data.results, response.data.total_pages, response.data.total_results));
-      });
       return {
         ...state,
         status: "loading",

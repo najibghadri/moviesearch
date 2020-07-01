@@ -7,12 +7,10 @@ import store from "./redux/store/store";
 import SearchScreen from "./SearchScreen";
 import MovieDetails from "./MovieDetails";
 
-import history from "./history";
-
 function App() {
   return (
     <Provider store={store}>
-      <BrowserRouter history={history}>
+      <BrowserRouter>
         <Switch>
           <Route
             exact

@@ -9,12 +9,17 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
+  useToast,
 } from "@chakra-ui/core";
 
 import { connect } from "react-redux";
-import { searchAction } from "./redux/actions/actions";
+import { searchAction, resultAction } from "./redux/actions/actions";
+
+import { search } from "./ApiService";
 
 const SearchControl = (props) => {
+  const toast = useToast();
+
   const initQuery = () => {
     return (
       props.query ||
@@ -32,6 +37,23 @@ const SearchControl = (props) => {
       return;
     }
     props.searchAction(query, 1);
+    search(query, 1)
+      .then((response) => {
+        props.resultAction(
+          response.data.results,
+          response.data.total_pages,
+          response.data.total_results
+        );
+      })
+      .catch((error) => {
+        toast({
+          title: "An error occurred.",
+          description: "API not available",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
+      });
     props.match.history.push({
       pathname: "/",
       search: "?" + new URLSearchParams({ query: query }).toString(),
@@ -68,13 +90,22 @@ const SearchControl = (props) => {
 
   let compactView = !!props.query;
   return (
-    <Flex flexDirection={compactView ? "row" : "column"} mx={compactView? undefined : "1rem"} flexWrap="wrap" alignItems={compactView ? "flex-start" : "center"}>
+    <Flex
+      flexDirection={compactView ? "row" : "column"}
+      mx={compactView ? undefined : "1rem"}
+      flexWrap="wrap"
+      alignItems={compactView ? "flex-start" : "center"}
+    >
       <FormControl
         marginBottom="1rem"
         marginRight={compactView ? "1rem" : undefined}
         isInvalid={!valid}
       >
-        <InputGroup width="400px" maxWidth={compactView? "calc(100vw - 5rem)" : "calc(100vw - 2rem)"} size="lg">
+        <InputGroup
+          width="400px"
+          maxWidth={compactView ? "calc(100vw - 5rem)" : "calc(100vw - 2rem)"}
+          size="lg"
+        >
           <InputLeftElement
             children={<Icon name="search" color="gray.500" />}
           />
@@ -90,7 +121,13 @@ const SearchControl = (props) => {
         </InputGroup>
         <FormErrorMessage>Please fill out this field.</FormErrorMessage>
       </FormControl>
-      <Button rounded="lg" size="lg" variantColor="red" variant="solid" onClick={submit}>
+      <Button
+        rounded="lg"
+        size="lg"
+        variantColor="red"
+        variant="solid"
+        onClick={submit}
+      >
         Search
       </Button>
     </Flex>
@@ -101,11 +138,13 @@ const mapDataToProps = (state) => {
   return {
     query: state.query,
     page: state.page,
+    error: state.error,
   };
 };
 
 const mapDispatchToProps = {
   searchAction: searchAction,
+  resultAction: resultAction,
 };
 
 export default connect(mapDataToProps, mapDispatchToProps)(SearchControl);

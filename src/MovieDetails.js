@@ -6,12 +6,11 @@ import {
   Box,
   Icon,
   Flex,
-  Spinner,
   Heading,
   Text,
   Image,
   Skeleton,
-  PseudoBox,
+  useToast
 } from "@chakra-ui/core";
 
 import { connect } from "react-redux";
@@ -19,6 +18,8 @@ import { connect } from "react-redux";
 import { getImagePath, getDefaultImage, getMovie } from "./ApiService";
 
 function MovieDetails(props) {
+  const toast = useToast();
+
   const [loading, setLoading] = useState(true);
   const [movie, setMovie] = useState({});
 
@@ -26,6 +27,14 @@ function MovieDetails(props) {
     getMovie(props.match.match.params.movieid).then((response) => {
       setMovie(response.data);
       setLoading(false);
+    }).catch(error => {
+      toast({
+        title: "An error occurred.",
+        description: "API not available",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      })
     });
   }, []);
 

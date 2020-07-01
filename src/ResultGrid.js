@@ -5,13 +5,18 @@ import {
   Spinner,
   Button,
   Heading,
+  useToast
 } from "@chakra-ui/core";
 
+import { search } from "./ApiService";
+
 import { connect } from "react-redux";
-import { searchAction } from "./redux/actions/actions";
+import { searchAction, resultAction } from "./redux/actions/actions";
 import MovieThumbnail from "./MovieThumbnail";
 
 const ResultGrid = (props) => {
+  const toast = useToast();
+
   let loadingDOM = null;
   if (props.status === "loading") {
     loadingDOM = (
@@ -27,6 +32,18 @@ const ResultGrid = (props) => {
 
   const nextPage = () => {
     props.searchAction(props.query, props.page + 1);
+    search(props.query, props.page + 1).then((response) => {
+      props.resultAction(response.data.results, response.data.total_pages, response.data.total_results);
+    })
+    .catch((error) => {
+      toast({
+        title: "An error occurred.",
+        description: "API not available",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    });;
   };
 
   return (
@@ -66,6 +83,7 @@ const mapDataToProps = (state) => {
 
 const mapDispatchToProps = {
   searchAction: searchAction,
+  resultAction: resultAction
 };
 
 export default connect(mapDataToProps, mapDispatchToProps)(ResultGrid);
