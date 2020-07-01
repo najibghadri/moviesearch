@@ -28,7 +28,7 @@ function MovieThumbnail(props) {
         <Image height="372px" rounded="md" src={imgSrc} />
         <Box align="baseline" mt={2} paddingRight="4px">
           <Text ml={2} fontsize="sm">
-            ⭐<b>{props.movie.vote_average}</b> ({props.movie.vote_count})
+          <span aria-label="rating" role="img">⭐</span><b>{props.movie.vote_average}</b> ({props.movie.vote_count})
           </Text>
           <Text ml={2} fontSize="md" fontWeight="bold" color="red.800">
             {props.movie.title}
