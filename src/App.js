@@ -1,27 +1,31 @@
 import React from "react";
-import { Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 import { Provider } from "react-redux";
-import store from "../redux/store/store";
+import store from "./redux/store/store";
+
+import SearchScreen from "./SearchScreen";
+import MovieDetails from "./MovieDetails";
+
+import history from "./history";
 
 function App() {
   return (
     <Provider store={store}>
-      <Router history={history}>
+      <BrowserRouter history={history}>
         <Switch>
-          <Route exact path="/">
-            <SearchScreen />
-          </Route>
           <Route
-            path="/search/:roomid"
-            render={(matchProps) => <ResultScreen {...matchProps} />}
+            exact
+            path="/"
+            render={(match) => <SearchScreen match={match} />}
           />
           <Route
-            path="/:movieid"
-            render={(matchProps) => <ResultScreen {...matchProps} />}
+            exact
+            path="/movies/:movieid"
+            render={(match) => <MovieDetails  match={match} />}
           />
         </Switch>
-      </Router>
+      </BrowserRouter>
     </Provider>
   );
 }

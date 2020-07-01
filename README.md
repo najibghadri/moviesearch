@@ -1,3 +1,7 @@
+## Movie-searching React App
+
+![image](https://user-images.githubusercontent.com/11639734/86271176-c02b3100-bbcc-11ea-877c-d888c8083a05.png)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
